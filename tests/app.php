@@ -1,52 +1,29 @@
 <?php
 namespace tests;
 
+use Yii;
+
 require __DIR__.'/_bootstrap.php';
 
-use app\models\User;
+foreach (scandir(__DIR__. '/unit') as $file) {
 
+	if (substr($file, -8, 8) == 'Test.php') {
 
+		$className = pathinfo($file, PATHINFO_FILENAME);
+		$class = new \ReflectionClass('\tests\unit\\'. $className);
 
-class UserTest {
+		foreach ($class->getMethods() as $method) {
 
-	protected function assert($condition, $message = '') {
+			if (substr($method->name, 0, 4) == 'test') {
 
-		echo $message;
-
-		if ($condition) {
-
-			echo ' Ok'.PHP_EOL;
-		} else {
-
-			echo ' Fail'.PHP_EOL;
-			exit();
+				echo 'Test ' . $method->class . '::' . $method->name . PHP_EOL . PHP_EOL;
+				/* @var TestCase $test */
+				$test = new $method->class;
+				$test->setUp();
+				$test->{$method->name}();
+				$test->tearDown();
+				echo PHP_EOL;
+			}
 		}
 	}
-
-	protected function assertTrue($condition, $message = '') {
-
-		$this->assert($condition === true, $message);
-	}
-
-	protected function assertFalse($condition, $message = '') {
-
-		$this->assert($condition === false, $message);
-	}
-
-	protected function assertArrayHasKey($key, $array, $message = '') {
-
-		$this->assert(array_key_exists($key, $array), $message);
-	}
-
-	public function testValidateEmptyValues() {
-
-		$user = new User();
-
-		$this->assertFalse($user->validate(), 'model is not valid');
-		$this->assertArrayHasKey('username', $user->getErrors(), 'check empty username error');
-		$this->assertArrayHasKey('email', $user->getErrors(), 'check empty email error');
-	}
 }
-
-$test = new UserTest();
-$test->testValidateEmptyValues();
