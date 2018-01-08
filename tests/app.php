@@ -1,8 +1,6 @@
 <?php
 namespace tests;
 
-use Yii;
-
 require __DIR__.'/_bootstrap.php';
 
 foreach (scandir(__DIR__. '/unit') as $file) {

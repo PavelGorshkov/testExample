@@ -2,12 +2,12 @@
 namespace tests\unit;
 
 use app\models\User;
-use tests\TestCase;
 use Yii;
 
-class UserTest extends TestCase {
+class UserTest extends \PHPUnit_Framework_TestCase {
 
-	public function setUp() {
+
+	protected function setUp() {
 
 		parent::setUp();
 
